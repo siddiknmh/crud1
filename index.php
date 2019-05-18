@@ -18,14 +18,31 @@ if ('seed' == $task) {
     $info = 'Seed is complate';
 }
 
-$fname = '';
+if (isset($_POST['file_submit'])) {
+    $preData = $_FILES['predata'];
+    $preDataType = $_FILES['predata']['type'];
+    $mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
+    $preDataSize = $_FILES['predata']['size'];
+
+    if (in_array($preDataType, $mimes)) {
+        if ( $preDataSize < 1048576) {
+            processImportData($preData);
+        } else {
+            echo $warning = "We are not accepting more than 1MB file!";
+        }   
+    } else {
+        echo $warning = "We are not accepting without CSV file!";
+    }
+}
+
+$fname  = '';
 $lname = '';
-$roll = '';
+$roll  = '';
 if (isset($_POST['submit'])) {
     $fname = filter_input(INPUT_POST, 'fname', FILTER_SANITIZE_STRING);
     $lname = filter_input(INPUT_POST, 'lname', FILTER_SANITIZE_STRING);
-    $roll = filter_input(INPUT_POST, 'roll', FILTER_SANITIZE_STRING);
-    $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
+    $roll  = filter_input(INPUT_POST, 'roll', FILTER_SANITIZE_STRING);
+    $id    = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
 
     if ($id) {
         // Update the exiesting student
@@ -69,7 +86,7 @@ if (isset($_POST['submit'])) {
 <body>
 <div class="container">
     <div class="row">
-        <div class="column column-60 column-offset-20">
+        <div class="column column-80 column-offset-10">
             <h2>Project-2 CRUD</h2>
             <p>A simple project to perform CRUD operations using plan file and php</p>
             <?php include_once('inc/templates/nav.php'); ?>
@@ -82,9 +99,36 @@ if (isset($_POST['submit'])) {
 
         </div>
     </div>
+    
+    <!--Section for import handling-->
+    <?php if ('import' == $task): ?>
+        <div class="row">
+            <div class="column column-80 column-offset-10">
+                <blockquote>
+                    <p>The seed, you can use for add a few demo data for checking look and feel of real data.</p>
+                </blockquote>
+                <a class="button" href="/crud/index.php?task=seed">Seed</a>
+
+                <blockquote>
+                    <p>Uploade csv file here for add students data. The csv file format must will be like:</p>
+                    <p>First Name, Last Name, Roll, Email</p>
+                </blockquote>
+
+                <form action="/crud/index.php?task=import" method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <label for="predata">Import from csv</label>
+                        <input type="file" name="predata" id="predata"><br>
+                        <input class="button-primary" type="submit" value="Submit" name="file_submit">
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
+    <!--End section import handling-->
+
     <?php if ('1' == $error): ?>
         <div class="row">
-            <div class="column column-60 column-offset-20">
+            <div class="column column-80 column-offset-10">
                 <blockquote>
                     Duplicate roll numbar!
                 </blockquote>
@@ -93,14 +137,14 @@ if (isset($_POST['submit'])) {
     <?php endif; ?>
     <?php if ('report' == $task): ?>
         <div class="row">
-            <div class="column column-60 column-offset-20">
+            <div class="column column-80 column-offset-10">
                 <?php generateReport(); ?>
             </div>
         </div>
     <?php endif; ?>
     <?php if('add' == $task): ?>
         <div class="row">
-            <div class="column column-60 column-offset-20">
+            <div class="column column-80 column-offset-10">
 
                 <form action="/crud/index.php?task=add" method="post">
                     <fieldset>
@@ -126,7 +170,7 @@ if (isset($_POST['submit'])) {
         
     ?>
         <div class="row">
-            <div class="column column-60 column-offset-20">
+            <div class="column column-80 column-offset-10">
 
                 <form method="post">
                     <fieldset>
