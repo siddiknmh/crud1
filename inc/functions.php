@@ -183,5 +183,15 @@ function processImportData($preData){
     // Write csv data in file
     $serializeData = serialize($preDataArray);
     file_put_contents(DB_NAME, $serializeData, LOCK_EX);
+}
 
+function generateCsv(){
+    $serializeData = file_get_contents(DB_NAME);
+    $students      = unserialize($serializeData);
+    $csvFile = getcwd().'\data\students.csv';
+    $fp = fopen($csvFile, 'w');
+    foreach ($students as $student) {
+        fputcsv($fp, $student);
+    }
+ 
 }

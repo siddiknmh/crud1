@@ -34,6 +34,13 @@ if (isset($_POST['file_submit'])) {
         echo $warning = "We are not accepting without CSV file!";
     }
 }
+$downloadUrl = '';
+if ('generate' == $task) {
+    generateCsv();
+    $downloadUrl = getcwd().'/data/students.csv';
+    
+
+}
 
 $fname  = '';
 $lname = '';
@@ -135,6 +142,31 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     <?php endif; ?>
+
+    <?php if ('export' == $task): ?>
+        <div class="row">
+            <div class="column column-80 column-offset-10">
+                <blockquote>
+                    <p>Generate the student data in CSV format.</p>
+                </blockquote>
+                <a class="button" href="/crud/index.php?task=generate">Generate CSV</a>
+                <a href="<?php echo $downloadUrl; ?>">Download</a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ('generate' == $task): ?>
+        <div class="row">
+            <div class="column column-80 column-offset-10">
+                <blockquote>
+                    <p>Export the student data</p>
+                </blockquote>
+                <a class="button"  href="<?php echo $downloadUrl; ?>" Download>Export</a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+
     <?php if ('report' == $task): ?>
         <div class="row">
             <div class="column column-80 column-offset-10">
